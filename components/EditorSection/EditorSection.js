@@ -22,7 +22,7 @@ export default function EditorSection(props) {
   return (
     <Section>
       <Title>
-        Editor's Choice
+        {`Editor's Choice`}
       </Title>
       <SubTitle>
         Curated with love
