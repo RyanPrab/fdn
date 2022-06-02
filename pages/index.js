@@ -1,3 +1,4 @@
+import React ,{ useState, useEffect } from 'react';
 import Head from 'next/head';
 import Layout from "../components/Layout"
 import styled from "styled-components";
@@ -84,138 +85,49 @@ export default function Home(props) {
   const editorChoice = data["editor's choice"];
   const latestArticle = data["latest articles"];
   const latestReview = data["latest review"];
-  const popularGroups = [
-    {
-      name: "Group 1",
-      image: '/group_photo1.png',
-      title: "Embrace the Curl",
-      description: "May our curls pop and never stop!"
-    },
-    {
-      name: "Group 2",
-      image: '/group_photo2.png',
-      title: "Embrace the Curl",
-      description: "May our curls pop and never stop!"
-    },
-    {
-      name: "Group 3",
-      image: '/group_photo3.png',
-      title: "Embrace the Curl",
-      description: "May our curls pop and never stop!"
-    },
-    {
-      name: "Group 4",
-      image: '/group_photo4.png',
-      title: "Embrace the Curl",
-      description: "May our curls pop and never stop!"
-    }
-  ];
 
-  const topBrands = [
-    {
-      name: "nivea",
-      image: '/brands/nivea.png',
-      width: 100,
-      height: 100
-    },
-    {
-      name: "the ordinary",
-      image: '/brands/the_ordinary.png',
-      width: 100,
-      height: 40
-    },
-    {
-      name: "the body shop",
-      image: '/brands/the_body_shop.png',
-      width: 100,
-      height: 100
-    },
-    {
-      name: "sk II",
-      image: '/brands/SK-II_logo.png',
-      width: 100,
-      height: 80
-    },
-    {
-      name: "maybelline",
-      image: '/brands/maybelline.png',
-      width: 140,
-      height: 20
-    },
-    {
-      name: "innisfree",
-      image: '/brands/innisfree.png',
-      width: 100,
-      height: 100
-    },
-  ];
+  const [groups, setGroups] = useState(null);
+  const [brands, setBrands] = useState(null);
+  const [trending, setTrending] = useState(null);
 
-  const trendings = [
-    {
-      image: "/trending1.png",
-      rating: 4.9,
-      totalReviewer: 7,
-      name: "SKINCEUTICALS",
-      description: "C E Ferulic",
-      type: ""
-    },
-    {
-      image: "/trending2.png",
-      rating: 4.9,
-      totalReviewer: 7,
-      name: "JUICE BEAUTY",
-      description: "Phyto-Pigments Flawless Serum",
-      type: "Rosy Beige"
-    },
-    {
-      image: "/trending3.png",
-      rating: 4.9,
-      totalReviewer: 7,
-      name: "JUICE BEAUTY",
-      description: "Pure Pressed Blush",
-      type: "Neutral Rose"
-    },
-    {
-      image: "/trending4.png",
-      rating: 4.9,
-      totalReviewer: 7,
-      name: "VAL BY VALERIE THOMAS",
-      description: "Pure Pressed Blush",
-      type: "Neutral Rose"
-    },
-    {
-      image: "/trending1.png",
-      rating: 4.9,
-      totalReviewer: 7,
-      name: "SKINCEUTICALS",
-      description: "C E Ferulic",
-      type: ""
-    },
-    {
-      image: "/trending2.png",
-      rating: 4.9,
-      totalReviewer: 7,
-      name: "JUICE BEAUTY",
-      description: "Phyto-Pigments Flawless Serum",
-      type: "Rosy Beige"
-    },
-    {
-      image: "/trending3.png",
-      rating: 4.9,
-      totalReviewer: 7,
-      name: "JUICE BEAUTY",
-      description: "Pure Pressed Blush",
-      type: "Neutral Rose"
-    },
-    {
-      image: "/trending4.png",
-      rating: 4.9,
-      totalReviewer: 7,
-      name: "VAL BY VALERIE THOMAS",
-      description: "Pure Pressed Blush",
-      type: "Neutral Rose"
+  const fetchGroups = async () => {
+    const response = await fetch(`/api/popular-groups`);
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`);
     }
-  ];
+
+    const data = await response.json();
+    setGroups(data);
+  };
+
+  const fetchBrands = async () => {
+    const response = await fetch(`/api/top-brands`);
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    setBrands(data);
+  };
+
+  const fetchTrending = async () => {
+    const response = await fetch(`/api/trending`);
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    setTrending(data);
+  };
+
+  useEffect(() => {
+   fetchGroups();
+   fetchBrands();
+   fetchTrending();
+  }, [data]);
 
   return (
     <Layout>
@@ -265,14 +177,14 @@ export default function Home(props) {
               </MidBanner>
             </div>
             <GroupSection
-              data={popularGroups}
+              data={groups?.items}
             />
             <Videos/>
             <TrendingSection
-              data={trendings}
+              data={trending?.items}
             />
             <BrandSection
-              data={topBrands}
+              data={brands?.items}
             />
             <div className='flex flex-col w-full'>
               <SeoTitle>
